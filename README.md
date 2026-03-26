@@ -41,7 +41,7 @@ sudo apt-get install libncurses5-dev libncursesw5-dev
 
 Then compile it, using, for example, gcc compiler:
 ```bash
-gcc engine.c -o game -lncurses
+gcc engine.c -o game -lncurses -lm
 ```
 
 After compiling, you can launch binary file:
