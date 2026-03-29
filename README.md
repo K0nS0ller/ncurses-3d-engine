@@ -30,7 +30,7 @@
 
 # NCURSES 3D engine
 
-[rotation][screenshots/rotation.GIF]
+![rotation](screenshots/rotation.GIF)
 
 # How to compile?
 
@@ -64,7 +64,7 @@ Use W S buttons to move forward/backward respectively, A D to strafe, and the J 
 
 # Non‑Euclidean illusion
 
-[non-euclidean][screenshots/non-euclidean]
+![non-euclidean](screenshots/non-euclidean)
 
 This project doesn’t just fake 3D from a 2D map — it also implements a non‑Euclidean trick.  
 Go inside the building and try to reach the end: you never will. The interior is infinite.  
