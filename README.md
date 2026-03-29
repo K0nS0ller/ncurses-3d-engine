@@ -30,10 +30,14 @@
 
 # NCURSES 3D engine
 
+![rotation][screenshots/rotation.GIF]
+
 # How to compile?
 
 You can compile this by first installing ncurses lib:
+
 On Debian/Ubuntu:
+
 ```bash
 sudo apt-get install libncurses5-dev libncursesw5-dev
 ```
@@ -50,7 +54,7 @@ After compiling, you can launch binary file:
 ```
 
 # How to move?
-Use W S buttons to move forward/backward respectively, and the A and D buttons to look around.
+Use W S buttons to move forward/backward respectively, A D to strafe, and the J L buttons to look around.
 
 ```text
 *********************IMPORTANT!!!************************
@@ -59,6 +63,9 @@ Use W S buttons to move forward/backward respectively, and the A and D buttons t
 ```
 
 # Non‑Euclidean illusion
+
+![non-euclidean][screenshots/non-euclidean]
+
 This project doesn’t just fake 3D from a 2D map — it also implements a non‑Euclidean trick.  
 Go inside the building and try to reach the end: you never will. The interior is infinite.  
 But step outside, and you’ll see the same building is actually tiny.  
