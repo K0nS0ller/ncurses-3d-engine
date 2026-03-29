@@ -1,16 +1,18 @@
 #include <stdio.h>
-#include <curses.h>
+#include <ncurses.h>
 #include <math.h>
 #include <stdbool.h>
 
 #define MAP_WIDTH  45
 #define MAP_HEIGHT 65
 #define FOV   (M_PI / 3.0)
-#define DIST_MAX   20.0
+#define DIST_MAX 30.0
 #define WALL_HEIGHT 20
+#define SPEED 0.1f
 
-const char gradient[] = "$@#\\/|!;:  ";
+// const char gradient[] = "$@#\\/|!;:  ";
 
+const char gradient[] = "@%#*+=_-   ";
 
 const char map_inside[MAP_HEIGHT][MAP_WIDTH + 1] = {
     "#############################################",
@@ -45,15 +47,17 @@ const char map_inside[MAP_HEIGHT][MAP_WIDTH + 1] = {
     "#            # #        # #                 #",
     "#            #            #                 #",
     "#            # #        # #                 #",
+    "#            #            #                 #",
+    "#            # #        # #                 #",
+    "#            #            #                 #",
+    "#            #4#44444444#4#                 #",
+    "#            #            #                 #",
+    "#            # #        # #                 #",
+    "#            #            #                 #",
+    "#            # #        # #                 #",
     "#            #111111111111#                 #",
     "#            # #        # #                 #",
     "#            #            #                 #",
-    "#            #            #                 #",
-    "#            # #        # #                 #",
-    "#            #            #                 #",
-    "#            # #        # #                 #",
-    "#            #            #                 #",
-    "#            # #        # #                 #",
     "#            # #        # #                 #",
     "#            #            #                 #",
     "#            # #        # #                 #",
@@ -68,15 +72,13 @@ const char map_inside[MAP_HEIGHT][MAP_WIDTH + 1] = {
     "#            #            #                 #",
     "#            # #        # #                 #",
     "#            #            #                 #",
+    "#            # #        # #                 #",
     "#            #            #                 #",
     "#            # #        # #                 #",
     "#            #            #                 #",
     "#            #            #                 #",
     "#            # #        # #                 #",
     "#            #            #                 #",
-    "#            #            #                 #",
-    "#            ##############                 #",
-    "#                                           #",
     "#############################################"
 };
 
@@ -84,7 +86,7 @@ const char map_inside[MAP_HEIGHT][MAP_WIDTH + 1] = {
 const char map_outside[MAP_HEIGHT][MAP_WIDTH + 1] = {
     "#############################################",
     "#                                           #",
-    "#                                           #",
+    "#            33333333333333                 #",
     "#            33333333333333                 #",
     "#            33333333333333                 #",
     "#            33333333333333                 #",
@@ -243,7 +245,13 @@ bool is_trigger_three(int x, int y) {
     return map[y][x] == '3';
 }
 
-bool is_inside = false;
+bool is_trigger_four(int x, int y) {
+    if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT)
+        return true;
+    return map[y][x] == '4';
+}
+
+int tunnel_pass_iterations = 0;
 
 int main() {
     initscr();
@@ -262,18 +270,6 @@ int main() {
         }
     }
 
-    int ch;
-
-    for(int row = 1; row < maxy; row++){
-        for(int col = 0; col < maxx; col++){
-            mvprintw(row, col, ".");
-            refresh();
-            if(ch == 'q'){
-                endwin();
-                return 0;
-            }
-        }
-    }
 
     float px = MAP_WIDTH / 2;
     float py = 1;
@@ -281,11 +277,11 @@ int main() {
 
 
     while (1) {
-        ch = getch();
+        int ch = getch();
         if (ch == 'q') break;
 
-        if (ch == 'd') angle += 5.0f;
-        if (ch == 'a') angle -= 5.0f;
+        if (ch == 'l') angle += 5.0f;
+        if (ch == 'j') angle -= 5.0f;
         if (angle < 0) angle += 360;
         if (angle >= 360) angle -= 360;
 
@@ -295,14 +291,29 @@ int main() {
         float new_x = px, new_y = py;
 
         if (ch == 'w') {
-            new_x = px + dx * 0.1f;
-            new_y = py + dy * 0.1f;
+            new_x = px + dx * SPEED;
+            new_y = py + dy * SPEED;
         }
         if (ch == 's') {
-            new_x = px - dx * 0.1f;
-            new_y = py - dy * 0.1f;
+            new_x = px - dx * SPEED;
+            new_y = py - dy * SPEED;
         }
 
+        if (ch == 'd') {
+            float new_rad = rad + M_PI / 2.0f;
+            float ndx = cosf(new_rad);
+            float ndy = sinf(new_rad);
+            new_x = px + ndx * SPEED;
+            new_y = py + ndy * SPEED;
+        }
+
+        if (ch == 'a') {
+            float new_rad = rad - M_PI / 2.0f;
+            float ndx = cosf(new_rad);
+            float ndy = sinf(new_rad);
+            new_x = px + ndx * SPEED;
+            new_y = py + ndy * SPEED;
+        }
 
 
         if (!is_wall((int)new_x, (int)new_y)) {
@@ -312,7 +323,16 @@ int main() {
 
         if (is_trigger_one((int)new_x, (int)new_y)) {
             px = new_x;
-            py -= 4;
+            py -= 3;
+            tunnel_pass_iterations++;
+        }
+
+        if (is_trigger_four((int)new_x, (int)new_y)) {
+            if(iterations > 0){
+                px = new_x;
+                py += 3;
+                tunnel_pass_iterations--;
+            }
         }
 
 
@@ -365,7 +385,7 @@ int main() {
                 }
             }
         }
-        //mvprintw(0,0,"player pos: x %f y %f", px, py);
+        //mvprintw(0,0,"player pos: x %f y %f; angle: %f", px, py, angle);
         refresh();
 
     }
