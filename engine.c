@@ -328,7 +328,7 @@ int main() {
         }
 
         if (is_trigger_four((int)new_x, (int)new_y)) {
-            if(iterations > 0){
+            if(tunnel_pass_iterations > 0){
                 px = new_x;
                 py += 3;
                 tunnel_pass_iterations--;
