@@ -13,14 +13,14 @@ sudo apt-get install libncurses5-dev libncursesw5-dev
 ```
 
 
-Then compile it, using, for example, gcc compiler:
+Then just type make:
 ```bash
-gcc engine.c -o game -lncurses -lm
+make
 ```
 
 After compiling, you can launch binary file:
 ```bash
-./game
+./engine
 ```
 
 # How to move?
