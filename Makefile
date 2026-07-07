@@ -1,5 +1,5 @@
 CC = gcc
-TARGETS = main.c
+TARGETS = engine.c
 BIN = engine
 LIBS = -lncurses -lm
 FLAGS = -Wall
