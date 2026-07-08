@@ -1,9 +1,15 @@
 CC = gcc
-TARGETS = engine.c
+TARGET = engine.c
 BIN = engine
 LIBS = -lncurses -lm
 FLAGS = -Wall
 
+.PHONY: all clean
 
-program engine:
-	$(CC) $(TARGETS) -o $(BIN) $(LIBS) $(FLAGS)
+all: $(BIN)
+
+$(BIN): $(TARGET)
+	$(CC) $(FLAGS) -o $@ $< $(LIBS)
+
+clean:
+	rm -f $(BIN)
